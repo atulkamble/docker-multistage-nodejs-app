@@ -2,7 +2,10 @@
 
 ## Build
 ```bash
-docker build -t multistage-docker-app .
+git clone https://github.com/atulkamble/docker-multistage-nodejs-app.git
+cd docker-multistage-nodejs-app
+docker build -t atuljkamble/multistage-docker-app .
+docker push atuljkamble/multistage-docker-app
 ```
 
 ## Run
