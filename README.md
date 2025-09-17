@@ -43,3 +43,5 @@ docker compose up --build -d
 
 - App: http://localhost:3000
 - Health: http://localhost:3000/health
+
+// References: https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-beginners-tutorial
