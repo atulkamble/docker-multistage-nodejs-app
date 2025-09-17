@@ -3,7 +3,7 @@ services:
   app:
     build:
       context: .
-    image: multistage-docker-app:latest
+    image: atuljkamble/multistage-docker-app:latest
     container_name: multistage-app
     ports:
       - "3000:3000"
