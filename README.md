@@ -1,5 +1,4 @@
-# Node.js Multistage Docker App — Updated Code
-
+# Node.js Multistage Docker App
 ```
 git clone https://github.com/atulkamble/docker-multistage-nodejs-app.git
 cd docker-multistage-nodejs-app
