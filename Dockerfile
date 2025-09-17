@@ -6,9 +6,12 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 
-# Leverage BuildKit cache for npm
+# Copy lockfile for reproducible installs
 COPY package*.json ./
-RUN --mount=type=cache,target=/root/.npm       npm ci --omit=dev
+
+# Fast, deterministic install (requires matching package-lock.json)
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev
 
 ############################
 # Stage 2: Runtime
@@ -16,26 +19,24 @@ RUN --mount=type=cache,target=/root/.npm       npm ci --omit=dev
 FROM node:20-alpine AS runtime
 WORKDIR /app
 
-# Security: drop privileges
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Copy only what we need, keep ownership minimal
+# Copy deps and app files
 COPY --from=deps /app/node_modules ./node_modules
 COPY --chown=node:node index.js package*.json ./
 
-# Labels (OCI)
-LABEL org.opencontainers.image.source="https://example.com/your-repo" \
-      org.opencontainers.image.title="multistage-docker-app" \
+# Basic metadata
+LABEL org.opencontainers.image.title="multistage-docker-app" \
       org.opencontainers.image.description="Minimal Node/Express app with multistage Docker build" \
       org.opencontainers.image.licenses="MIT"
 
-# Healthcheck (busybox wget available in Alpine)
+# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
   CMD wget -qO- http://127.0.0.1:${PORT}/health || exit 1
 
 EXPOSE 3000
 USER node
 
-# Use tini-like init with docker run --init (recommended)
+# Use --init at runtime for proper signal handling
 CMD ["node", "index.js"]
