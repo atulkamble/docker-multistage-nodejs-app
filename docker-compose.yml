@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+    image: multistage-docker-app:latest
+    container_name: multistage-app
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MESSAGE=Hello from Compose!
+    init: true
+    restart: unless-stopped
